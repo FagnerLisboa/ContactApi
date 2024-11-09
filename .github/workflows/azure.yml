@@ -53,4 +53,5 @@ jobs:
         with:
           app-name: 'contactApi'
           slot-name: 'production'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
           package: ' ${{ github.workspace }}/output'
