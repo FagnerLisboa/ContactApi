@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ContactApi.Models;
 using SendGrid;
@@ -16,6 +17,7 @@ public class ContactController : ControllerBase
         _configuration = configuration;
     }
 
+    [Authorize] // Exige autenticação JWT para acessar este endpoint
     [HttpPost("send")]
     public async Task<IActionResult> SendEmail([FromBody] ContactFormModel contactForm)
     {

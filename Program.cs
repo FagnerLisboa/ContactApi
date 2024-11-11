@@ -1,3 +1,7 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Configura os serviços da aplicação
@@ -14,6 +18,24 @@ builder.Services.AddCors(options =>
 });
 builder.Services.AddControllers(); // Adiciona os controladores
 
+// Configuração do JWT
+var key = Encoding.ASCII.GetBytes("chave-secreta-super-segura"); // Substitua por uma chave segura
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ValidateIssuer = false,
+        ValidateAudience = false
+    };
+});
+
 var app = builder.Build();
 
 // Configura o pipeline de requisições HTTP
@@ -25,7 +47,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors("AllowAngularApp"); // Aplica a política CORS
-app.UseAuthorization(); // Remover se não estiver usando autorização
+
+app.UseAuthentication(); // Adiciona autenticação JWT ao pipeline
+app.UseAuthorization();   // Adiciona autorização ao pipeline
 
 app.MapControllers(); // Mapeia os endpoints dos controllers
 
