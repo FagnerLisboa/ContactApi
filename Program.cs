@@ -4,21 +4,24 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configura os serviços da aplicação
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngularApp", policy =>
     {
-        policy.WithOrigins("http://localhost:4200") // URL do app Angular
-              .AllowAnyHeader()
-              .AllowAnyMethod();
+        policy.WithOrigins(
+            "http://localhost:4200", 
+            "https://fagnerlisboa.github.io/portfolio-website/"
+        )
+        .AllowAnyHeader()
+        .AllowAnyMethod();
     });
 });
-builder.Services.AddControllers(); // Adiciona os controladores
 
-// Configuração do JWT
+builder.Services.AddControllers(); 
+
 var key = Encoding.ASCII.GetBytes("chave-secreta-super-segura"); // Substitua por uma chave segura
 builder.Services.AddAuthentication(options =>
 {
